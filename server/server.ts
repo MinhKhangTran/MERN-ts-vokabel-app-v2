@@ -4,6 +4,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import vokRouter from "./routes/vokabel";
 import userRouter from "./routes/users";
+import authRouter from "./routes/auth";
 import errorHandler from "./middlewares/error";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
@@ -61,6 +62,7 @@ app.use(cors());
 // Routing
 app.use("/api/v1/voks", vokRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 // Errorhandler
 app.use(errorHandler);
