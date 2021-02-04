@@ -11,14 +11,22 @@ const VokSchema: Schema = new mongoose.Schema({
   deutsch: {
     type: String,
     maxlength: 100,
+    trim: true,
+    lowercase: true,
   },
   koreanisch: {
     type: String,
     maxlength: 100,
+    trim: true,
+    lowercase: true,
   },
   like: {
     type: Boolean,
     default: false,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
   },
   // user: {
   //   type: mongoose.Schema.Types.ObjectId,
