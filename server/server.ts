@@ -1,8 +1,15 @@
 import express from "express";
 import "dotenv/config";
-import colors from "colors";
 import morgan from "morgan";
 import mongoose from "mongoose";
+import vokRouter from "./routes/vokabel";
+import errorHandler from "./middlewares/error";
+import mongoSanitize from "express-mongo-sanitize";
+import helmet from "helmet";
+// import xss from "xss-clean";
+import rateLimit from "express-rate-limit";
+import hpp from "hpp";
+import cors from "cors";
 
 // Init Express
 const app = express();
@@ -28,10 +35,33 @@ if (process.env.NODE_ENV === "development") {
 // using bodyparser
 app.use(express.json());
 
-// Routing
-app.get("/", (req, res) => {
-  res.send("Hello world");
+// Sanitize data
+app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet());
+
+// Prevent XSS attacks
+// app.use(xss());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 mins
+  max: 100,
 });
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Enable CORS
+app.use(cors());
+
+// Routing
+app.use("/api/v1/voks", vokRouter);
+
+// Errorhandler
+app.use(errorHandler);
 
 // Server startet
 const PORT = process.env.PORT || 5000;
