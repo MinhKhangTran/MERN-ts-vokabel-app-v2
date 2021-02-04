@@ -7,9 +7,8 @@ import { validationResult } from "express-validator";
 // @desc    Get all Voks
 // @route 	GET /api/v1/voks
 // @access  public
-export const getVoks = asyncHandler(async (req, res, next) => {
-  const vokabels = await Vokabel.find({}).sort({ date: 1 });
-  res.status(200).json({ success: true, data: vokabels });
+export const getVoks = asyncHandler(async (req, res: any, next) => {
+  res.status(200).json(res.advancedResults);
 });
 
 // @desc    Get single Vok

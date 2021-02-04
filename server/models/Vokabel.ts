@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { IUser } from "./User";
 
-interface IVokabel extends Document {
+export interface IVokabel extends Document {
   deutsch: string;
   koreanisch: string;
   like: boolean;

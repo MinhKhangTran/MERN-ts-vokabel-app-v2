@@ -2,6 +2,7 @@
 import express from "express";
 const router = express.Router();
 import { check } from "express-validator";
+import advancedResults from "../middlewares/advancedResults";
 
 import {
   getVoks,
@@ -10,10 +11,11 @@ import {
   deleteVok,
   getVok,
 } from "../controllers/vokabel";
+import Vokabel from "../models/Vokabel";
 
 router
   .route("/")
-  .get(getVoks)
+  .get(advancedResults(Vokabel), getVoks)
   .post(
     [
       check("deutsch", "Bitte deutsches Wort hinzufügen").not().isEmpty(),
