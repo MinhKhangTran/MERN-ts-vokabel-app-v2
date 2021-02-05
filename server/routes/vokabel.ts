@@ -10,8 +10,11 @@ import {
   updateVok,
   deleteVok,
   getVok,
+  toggleLike,
+  getLikedVoks,
 } from "../controllers/vokabel";
 import Vokabel from "../models/Vokabel";
+import { protect } from "../middlewares/auth";
 
 router
   .route("/")
@@ -21,6 +24,7 @@ router
       check("deutsch", "Bitte deutsches Wort hinzufügen").not().isEmpty(),
       check("koreanisch", "Bitte koreanisches Wort hinzufügen").not().isEmpty(),
     ],
+    protect,
     createVok
   );
 router
@@ -31,8 +35,11 @@ router
       check("deutsch", "Bitte deutsches Wort hinzufügen").not().isEmpty(),
       check("koreanisch", "Bitte koreanisches Wort hinzufügen").not().isEmpty(),
     ],
+    protect,
     updateVok
   )
-  .delete(deleteVok);
+  .delete(protect, deleteVok);
+router.route("/:id/liked").put(protect, toggleLike);
+router.route("/me/:id").get(protect, getLikedVoks);
 
 export default router;

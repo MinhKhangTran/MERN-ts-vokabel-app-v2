@@ -1,12 +1,12 @@
 import express from "express";
 const router = express.Router();
 import { check } from "express-validator";
-import { register, login, logout, getMe } from "../controllers/auth";
+import { register, login, getMe } from "../controllers/auth";
 import User from "../models/User";
+import { protect } from "../middlewares/auth";
 
 router.route("/register").post(register);
 router.route("/login").post(login);
-router.route("/logout").get(logout);
-router.route("/me").get(getMe);
+router.route("/me").get(protect, getMe);
 
 export default router;

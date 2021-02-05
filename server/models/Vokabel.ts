@@ -4,8 +4,10 @@ import { IUser } from "./User";
 export interface IVokabel extends Document {
   deutsch: string;
   koreanisch: string;
-  like: boolean;
+  likeCount: number;
+  likedBy: IUser[];
   user: IUser;
+  date: string;
 }
 const VokSchema: Schema = new mongoose.Schema({
   deutsch: {
@@ -20,10 +22,16 @@ const VokSchema: Schema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  like: {
-    type: Boolean,
-    default: false,
+  likeCount: {
+    type: Number,
+    default: 0,
   },
+  likedBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,

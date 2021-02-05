@@ -10,6 +10,7 @@ import {
   updateUser,
 } from "../controllers/users";
 import User from "../models/User";
+import { protect, admin } from "../middlewares/auth";
 
 router
   .route("/")
@@ -20,6 +21,8 @@ router
       check("password", "Bitte Password hinzufügen").not().isEmpty(),
       check("email", "Bitte Email hinzufügen").not().isEmpty().isEmail(),
     ],
+    protect,
+    admin,
     createUser
   );
 router
@@ -30,8 +33,10 @@ router
       check("username", "Bitte Username hinzufügen").not().isEmpty(),
       check("email", "Bitte Email hinzufügen").not().isEmpty().isEmail(),
     ],
+    protect,
+    admin,
     updateUser
   )
-  .delete(deleteUser);
+  .delete(protect, admin, deleteUser);
 
 export default router;
