@@ -13,6 +13,8 @@ const deleteData = async () => {
   try {
     await User.deleteMany();
     await Vokabel.deleteMany();
+    console.log("Daten wurden vernichtet!");
+    process.exit();
   } catch (error) {
     console.error(error);
     process.exit(1);

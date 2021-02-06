@@ -8,6 +8,9 @@ import {
   createUser,
   deleteUser,
   updateUser,
+  putToFav,
+  getLikedOnes,
+  getLikedList,
 } from "../controllers/users";
 import User from "../models/User";
 import { protect, admin } from "../middlewares/auth";
@@ -38,5 +41,9 @@ router
     updateUser
   )
   .delete(protect, admin, deleteUser);
+
+// router.route("/:id/me").put(protect, putToFav);
+// router.route("/liked").get(protect, getLikedOnes);
+router.route("/:id/liked").get(protect, getLikedList);
 
 export default router;

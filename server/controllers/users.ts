@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import { Request, Response, NextFunction } from "express";
 import ErrorResponse from "../utils/errorResponse";
 import { validationResult } from "express-validator";
+import Vokabel from "../models/Vokabel";
 
 // @desc    Get all users
 // @route 	GET /api/v1/users
@@ -83,5 +84,77 @@ export const deleteUser = asyncHandler(
     await user.remove();
 
     res.status(200).json({ success: true, data: {} });
+  }
+);
+
+// @desc    toggle like
+// @route 	PUT /api/v1/users/:id/me
+// @access  private
+export const putToFav = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const vokabel = await Vokabel.findById(req.params.id);
+    if (!vokabel) {
+      return next(
+        new ErrorResponse(`Diese Vokabel (${req.params.id}) gibt es nicht`, 404)
+      );
+    }
+
+    const likedVoks = req.user.likedVok;
+    const isInclude = likedVoks.indexOf(vokabel._id);
+    console.log(likedVoks);
+    console.log(isInclude);
+    console.log(vokabel._id);
+
+    // Wenn vorhanden
+    if (isInclude >= 0) {
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $pull: { likedVok: vokabel._id },
+        },
+        { new: true }
+      );
+      res.status(200).json({
+        success: true,
+
+        likedVok: req.user.likedVok,
+      });
+      // wenn nicht
+    } else {
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $push: { likedVok: vokabel._id },
+        },
+        { new: true }
+      );
+      res.status(200).json({
+        success: true,
+        likedVok: req.user.likedVok,
+      });
+    }
+  }
+);
+
+// @desc    Get liked ones
+// @route 	GET /api/v1/users/liked
+// @access  private
+export const getLikedOnes = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.user._id).populate("likedVok");
+    res.status(200).json({ success: true, data: user });
+  }
+);
+
+// @desc    Get liked ones
+// @route 	GET /api/v1/users/:id/liked
+// @access  private
+export const getLikedList = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const vokabel = await Vokabel.find();
+    console.log(vokabel);
+    const userSearch = await User.find({ _id: { $in: vokabel.likedBy } });
+
+    res.status(200).json({ success: true, data: userSearch });
   }
 );

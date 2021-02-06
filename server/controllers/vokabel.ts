@@ -26,15 +26,15 @@ export const getVok = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: vokabel });
 });
 
-// @desc    Get liked Voks
-// @route 	GET /api/v1/voks/me/:id
-// @access  private
-export const getLikedVoks = asyncHandler(async (req, res, next) => {
-  req.body.user = req.user._id;
-  const voks = await Vokabel.find({});
-  const user = await User.findById(req.params.id);
-  res.status(200).json({ success: true, data: user });
-});
+// // @desc    Get liked Voks
+// // @route 	GET /api/v1/voks/me/:id
+// // @access  private
+// export const getLikedVoks = asyncHandler(async (req, res, next) => {
+//   req.body.user = req.user._id;
+//   const voks = await Vokabel.find({});
+//   const user = await User.findById(req.params.id);
+//   res.status(200).json({ success: true, data: user });
+// });
 
 // @desc    create a Vok
 // @route 	POST /api/v1/voks
@@ -137,9 +137,10 @@ export const toggleLike = asyncHandler(
       mongoose.Types.ObjectId(req.user._id),
       typeof mongoose.Types.ObjectId(req.user._id)
     );
+    let updatedVok;
     // Wenn vorhanden
     if (hasUser >= 0) {
-      await Vokabel.findByIdAndUpdate(
+      updatedVok = await Vokabel.findByIdAndUpdate(
         req.params.id,
         {
           $pull: { likedBy: req.user._id },
@@ -149,12 +150,11 @@ export const toggleLike = asyncHandler(
       );
       res.status(200).json({
         success: true,
-        likes: vokabel.likeCount,
-        likedBy: vokabel.likedBy,
+        data: updatedVok,
       });
       // wenn nicht
     } else {
-      await Vokabel.findByIdAndUpdate(
+      updatedVok = await Vokabel.findByIdAndUpdate(
         req.params.id,
         {
           $push: { likedBy: req.user._id },
@@ -164,8 +164,7 @@ export const toggleLike = asyncHandler(
       );
       res.status(200).json({
         success: true,
-        likes: vokabel.likeCount,
-        likedBy: vokabel.likedBy,
+        updatedVok,
       });
     }
     // Check if liked by user
@@ -194,5 +193,22 @@ export const toggleLike = asyncHandler(
     //       likedBy: vokabel.likedBy,
     //     });
     // }
+  }
+);
+
+// @desc    likeCount inc
+// @route 	PUT /api/v1/voks/:id/like
+// @access  private
+
+export const likeCountInc = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const vok = await Vokabel.findById(req.params.id);
+    const user = req.user;
+    const updateVok = await Vokabel.findByIdAndUpdate(
+      req.params.id,
+      { likeCount: vok.likeCount + 1 },
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: updateVok });
   }
 );
