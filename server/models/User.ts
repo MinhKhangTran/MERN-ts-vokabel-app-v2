@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { IVokabel } from "./Vokabel";
 
 export interface IUser extends Document {
   username: string;
@@ -9,7 +8,7 @@ export interface IUser extends Document {
   password: string;
   date: string;
   role: string;
-  likedVok: IVokabel[];
+
   matchPassword: (this: any, enteredPw: string) => boolean;
   genToken: (this: any) => string;
 }
@@ -38,12 +37,6 @@ const UserSchema: Schema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
-  likedVok: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Vokabel",
-    },
-  ],
 });
 // Compare Passwords
 UserSchema.methods.matchPassword = async function (

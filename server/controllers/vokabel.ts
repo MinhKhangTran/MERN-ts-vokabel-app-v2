@@ -26,16 +26,6 @@ export const getVok = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: vokabel });
 });
 
-// // @desc    Get liked Voks
-// // @route 	GET /api/v1/voks/me/:id
-// // @access  private
-// export const getLikedVoks = asyncHandler(async (req, res, next) => {
-//   req.body.user = req.user._id;
-//   const voks = await Vokabel.find({});
-//   const user = await User.findById(req.params.id);
-//   res.status(200).json({ success: true, data: user });
-// });
-
 // @desc    create a Vok
 // @route 	POST /api/v1/voks
 // @access  private
@@ -193,22 +183,5 @@ export const toggleLike = asyncHandler(
     //       likedBy: vokabel.likedBy,
     //     });
     // }
-  }
-);
-
-// @desc    likeCount inc
-// @route 	PUT /api/v1/voks/:id/like
-// @access  private
-
-export const likeCountInc = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const vok = await Vokabel.findById(req.params.id);
-    const user = req.user;
-    const updateVok = await Vokabel.findByIdAndUpdate(
-      req.params.id,
-      { likeCount: vok.likeCount + 1 },
-      { new: true }
-    );
-    res.status(200).json({ success: true, data: updateVok });
   }
 );

@@ -11,7 +11,6 @@ import {
   deleteVok,
   getVok,
   toggleLike,
-  likeCountInc,
 } from "../controllers/vokabel";
 import Vokabel from "../models/Vokabel";
 import { protect } from "../middlewares/auth";
@@ -40,6 +39,5 @@ router
   )
   .delete(protect, deleteVok);
 router.route("/:id/liked").put(protect, toggleLike);
-// router.route("/:id/like").put(protect, likeCountInc);
 
 export default router;
